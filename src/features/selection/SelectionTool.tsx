@@ -22,28 +22,45 @@ export function SelectionTool() {
     if (!overlay || !ctx) return
 
     ctx.clearRect(0, 0, overlay.width, overlay.height)
-    ctx.setLineDash([6, 4])
-    ctx.lineWidth = 1
-    ctx.strokeStyle = '#ffffff'
+
+    // "Marching ants" outline: a solid dark halo first so the dashed white
+    // line on top of it stays visible against any underlying image color.
+    const strokeMarchingAnts = (draw: () => void) => {
+      ctx.setLineDash([])
+      ctx.strokeStyle = '#000000'
+      ctx.lineWidth = 3
+      draw()
+
+      ctx.setLineDash([6, 4])
+      ctx.strokeStyle = '#ffffff'
+      ctx.lineWidth = 2
+      draw()
+    }
 
     if (draftRect) {
-      ctx.strokeRect(draftRect.x + 0.5, draftRect.y + 0.5, draftRect.width, draftRect.height)
+      strokeMarchingAnts(() =>
+        ctx.strokeRect(draftRect.x + 0.5, draftRect.y + 0.5, draftRect.width, draftRect.height),
+      )
     } else if (draftPoints.length > 1) {
-      ctx.beginPath()
-      ctx.moveTo(draftPoints[0].x, draftPoints[0].y)
-      for (const p of draftPoints.slice(1)) ctx.lineTo(p.x, p.y)
-      ctx.stroke()
+      strokeMarchingAnts(() => {
+        ctx.beginPath()
+        ctx.moveTo(draftPoints[0].x, draftPoints[0].y)
+        for (const p of draftPoints.slice(1)) ctx.lineTo(p.x, p.y)
+        ctx.stroke()
+      })
     } else if (selection) {
       if (selection.shapeData.shape === 'rectangle') {
         const { x, y, width, height } = selection.shapeData.rect
-        ctx.strokeRect(x + 0.5, y + 0.5, width, height)
+        strokeMarchingAnts(() => ctx.strokeRect(x + 0.5, y + 0.5, width, height))
       } else {
         const pts = selection.shapeData.points
-        ctx.beginPath()
-        ctx.moveTo(pts[0].x, pts[0].y)
-        for (const p of pts.slice(1)) ctx.lineTo(p.x, p.y)
-        ctx.closePath()
-        ctx.stroke()
+        strokeMarchingAnts(() => {
+          ctx.beginPath()
+          ctx.moveTo(pts[0].x, pts[0].y)
+          for (const p of pts.slice(1)) ctx.lineTo(p.x, p.y)
+          ctx.closePath()
+          ctx.stroke()
+        })
       }
     }
   }, [draftRect, draftPoints, selection, overlayCanvasRef])
