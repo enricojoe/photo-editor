@@ -5,6 +5,7 @@ import { RotateTool } from '../transform/RotateTool'
 import { SelectionTool } from '../selection/SelectionTool'
 import { BucketFillTool } from '../bucketFill/BucketFillTool'
 import { BrushTool } from '../brush/BrushTool'
+import { ColorPickerTool } from '../colorPicker/ColorPickerTool'
 import { BackgroundRemovalTool } from '../backgroundRemoval/BackgroundRemovalTool'
 import { ColorAdjustTool } from '../colorAdjust/ColorAdjustTool'
 import { WatermarkTool } from '../watermark/WatermarkTool'
@@ -54,6 +55,12 @@ export function CanvasStage() {
             <>
               <h2 className="canvas-stage__sidebar-title">Brush</h2>
               <BrushTool />
+            </>
+          )}
+          {activeTool === 'colorPicker' && (
+            <>
+              <h2 className="canvas-stage__sidebar-title">Color Picker</h2>
+              <ColorPickerTool />
             </>
           )}
           {activeTool === 'backgroundRemoval' && (

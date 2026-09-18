@@ -9,6 +9,11 @@ export function hexToRgba(hex: string): RGBA {
   }
 }
 
+export function rgbToHex(r: number, g: number, b: number): string {
+  const toHex = (n: number) => n.toString(16).padStart(2, '0')
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`
+}
+
 export function normalizeHex(raw: string): string | null {
   const cleaned = raw.trim().replace(/^#/, '')
   if (/^[0-9a-fA-F]{3}$/.test(cleaned)) {

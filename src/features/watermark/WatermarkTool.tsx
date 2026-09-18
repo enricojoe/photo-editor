@@ -16,7 +16,7 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 export function WatermarkTool() {
-  const { imageWidth, imageHeight } = useEditorState()
+  const { imageWidth, imageHeight, pickedColor } = useEditorState()
   const { baseCanvasRef, overlayCanvasRef } = useCanvasRefs()
   const dispatch = useEditorDispatch()
   const { pushSnapshot } = useHistory()
@@ -25,7 +25,7 @@ export function WatermarkTool() {
 
   const [text, setText] = useState('')
   const [fontSize, setFontSize] = useState(36)
-  const [color, setColor] = useState('#ffffff')
+  const [color, setColor] = useState(pickedColor ?? '#ffffff')
   const [hexText, setHexText] = useState(color)
   const [syncedColor, setSyncedColor] = useState(color)
 
