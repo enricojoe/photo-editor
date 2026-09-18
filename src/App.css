@@ -427,21 +427,38 @@
 }
 
 .color-adjust-controls label {
-  display: flex;
+  display: grid;
+  grid-template-columns: 84px 1fr 38px;
   align-items: center;
   gap: 8px;
   color: var(--text);
   font-size: 14px;
 }
 
+.color-adjust-controls label span {
+  text-align: right;
+}
+
 .color-adjust-controls input[type='range'] {
-  flex: 1;
+  width: 100%;
   min-width: 0;
 }
 
 .color-adjust-controls__actions {
   display: flex;
   gap: 8px;
+}
+
+.color-adjust-presets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.color-adjust-presets__button.color-adjust-presets__button--active {
+  background-color: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
 }
 
 .processing-overlay {
