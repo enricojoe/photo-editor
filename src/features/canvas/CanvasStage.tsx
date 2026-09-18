@@ -3,6 +3,7 @@ import { ImageDropzone } from '../imageLoad/ImageDropzone'
 import { CropOverlay } from '../crop/CropOverlay'
 import { SelectionTool } from '../selection/SelectionTool'
 import { BucketFillTool } from '../bucketFill/BucketFillTool'
+import { BrushTool } from '../brush/BrushTool'
 import { BackgroundRemovalTool } from '../backgroundRemoval/BackgroundRemovalTool'
 import { ColorAdjustTool } from '../colorAdjust/ColorAdjustTool'
 
@@ -39,6 +40,12 @@ export function CanvasStage() {
             <>
               <h2 className="canvas-stage__sidebar-title">Bucket Fill</h2>
               <BucketFillTool />
+            </>
+          )}
+          {activeTool === 'brush' && (
+            <>
+              <h2 className="canvas-stage__sidebar-title">Brush</h2>
+              <BrushTool />
             </>
           )}
           {activeTool === 'backgroundRemoval' && (

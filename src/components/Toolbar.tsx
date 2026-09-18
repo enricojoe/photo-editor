@@ -19,6 +19,10 @@ export function Toolbar() {
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'bucketFill' })
   }
 
+  const handleBrushClick = () => {
+    dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'brush' })
+  }
+
   const handleBackgroundRemovalClick = () => {
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'backgroundRemoval' })
   }
@@ -36,9 +40,15 @@ export function Toolbar() {
       <button type="button" onClick={handleSelectionClick} disabled={!hasImage || isToolActive}>
         Selection
       </button>
-      <button type="button" onClick={handleBucketFillClick} disabled={!hasImage || isToolActive}>
-        Bucket Fill
-      </button>
+      <div className="toolbar__group">
+        <p className="toolbar__group-label">Colour</p>
+        <button type="button" onClick={handleBucketFillClick} disabled={!hasImage || isToolActive}>
+          Bucket Fill
+        </button>
+        <button type="button" onClick={handleBrushClick} disabled={!hasImage || isToolActive}>
+          Brush
+        </button>
+      </div>
       <button type="button" onClick={handleBackgroundRemovalClick} disabled={!hasImage || isToolActive}>
         Remove Background
       </button>
