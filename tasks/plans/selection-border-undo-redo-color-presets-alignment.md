@@ -20,21 +20,21 @@ So: run item 1 and items 3+4 in two parallel worktrees (genuinely independent fi
 
 ### Phase 0 — repo prep
 - [x] Confirm clean `main`, commit any pre-existing staged docs.
-- [ ] Create worktree `../PhotoEditor-selection-border` (branch `feat/selection-border`), symlink `node_modules`.
-- [ ] Create worktree `../PhotoEditor-color-presets` (branch `feat/color-presets-alignment`), symlink `node_modules`.
+- [x] Create worktree `../PhotoEditor-selection-border` (branch `feat/selection-border`), symlink `node_modules`.
+- [x] Create worktree `../PhotoEditor-color-presets` (branch `feat/color-presets-alignment`), symlink `node_modules`.
 
 ### Phase 1 — parallel subagents
-- [ ] Agent A — Selection visual border (`src/features/selection/SelectionTool.tsx` only): two-pass outline stroke (solid dark halo + existing white dashed line on top) for `draftRect`, `draftPoints`, and committed `selection`, so it's visible on any background. Verify build/lint/test.
-- [ ] Agent B — Color Adjust presets + aligned sliders (`colorFilter.ts`, `ColorAdjustTool.tsx`, `App.css`):
-  - Add `COLOR_ADJUST_PRESETS` (Normal/Warm/Cool/Night/Vintage/B&W) as `{brightness, contrast, saturation}` combos — no new slider dimension.
-  - Preset button grid in `ColorAdjustTool.tsx` (pattern matches `crop-presets`), active-state highlighting when values match.
-  - `.color-adjust-controls label` → CSS grid (`84px 1fr 34px` columns) so label/track/value align across rows regardless of text length; add matching `.color-adjust-presets` grid CSS.
-  - Verify build/lint/test; extend `tests/colorFilter.test.ts` for the new presets.
+- [x] Agent A — Selection visual border (`src/features/selection/SelectionTool.tsx` only): two-pass outline stroke (solid `#000000` halo, `lineWidth 3`, no dash + white dashed line on top, `lineWidth 2`, `[6,4]` dash) for `draftRect`, `draftPoints`, and committed `selection`. Build/lint/test verified (64/64 tests).
+- [x] Agent B — Color Adjust presets + aligned sliders (`colorFilter.ts`, `ColorAdjustTool.tsx`, `App.css`):
+  - Added `COLOR_ADJUST_PRESETS` (Normal/Warm/Cool/Night/Vintage/B&W) as `{brightness, contrast, saturation}` combos.
+  - Preset button grid in `ColorAdjustTool.tsx` matching `crop-presets` pattern, active-state highlighting when values match exactly.
+  - `.color-adjust-controls label` → CSS grid (`84px 1fr 38px` columns, widened value column from the planned 34px to fit "-100"); matching `.color-adjust-presets` grid CSS added.
+  - Build/lint/test verified; `tests/colorFilter.test.ts` extended (66/66 tests).
 
 ### Merge Phase 1
-- [ ] Merge `feat/selection-border` → `main`.
-- [ ] Merge `feat/color-presets-alignment` → `main`.
-- [ ] `npm run build && npm run lint && npm test` on merged `main`; remove both worktrees/branches.
+- [x] Merge `feat/selection-border` → `main` (fast-forward, no conflicts).
+- [x] Merge `feat/color-presets-alignment` → `main` (clean merge, no conflicts).
+- [x] `npm run build && npm run lint && npm test` on merged `main` — clean, 66/66 tests; worktrees and branches removed.
 
 ### Phase 2 — undo/redo (single subagent, off updated `main`)
 - [x] Worktree `../PhotoEditor-undo-redo`, branch `feat/undo-redo`.
@@ -48,15 +48,23 @@ So: run item 1 and items 3+4 in two parallel worktrees (genuinely independent fi
 - [x] Verify build/lint/test — clean build, lint has only the pre-existing `only-export-components` warning category (now 4 occurrences instead of 3, same convention as before), 69/69 tests pass (66 existing + 3 new for `transferSnapshot`).
 
 ### Merge Phase 2
-- [ ] Merge `feat/undo-redo` → `main`; `npm run build && npm run lint && npm test`; remove worktree/branch. (Not done by this subagent — implementation only, per its task scope; merge is the project-manager thread's job.)
+- [x] Merge `feat/undo-redo` → `main` (fast-forward, no conflicts); `npm run build && npm run lint && npm test` — clean, 69/69 tests; worktree and branch removed.
 
 ### Final verification
-- [ ] Full build/lint/test on final `main`.
-- [ ] `npm run dev` manual pass: selection border visible; delete selection → undo → redo; color preset → Apply → undo; crop → undo; bucket fill x2 → undo x2. No browser-automation tool available this session, so this is a manual/best-effort pass, not an automated one — call this out rather than claiming full interactive verification.
-- [ ] Update master `tasks/todo.md` with a line referencing this file.
+- [x] Full build/lint/test on final `main` — clean build, only the 4 pre-existing `react(only-export-components)` lint warnings on `EditorContext.tsx` (up from 3, since it now exports one more hook — same category, no new issue types), 69/69 tests passing.
+- [x] `npm run dev` — confirmed the dev server boots cleanly with no console/runtime errors at startup (`http://localhost:5174/`, port 5173 was already in use). **Not done**: clicking through the actual interactions (selection border visibility, undo/redo round-trips, presets, crop) in a real browser — no browser-automation tool was available this session, so this is not verified beyond static analysis + automated tests. Worth a manual pass before considering this fully done.
+- [x] Update master `tasks/todo.md` with a line referencing this file.
 
 ## Worktree bookkeeping
 Manual `git worktree add` (not `Agent`'s `isolation: "worktree"`, which failed mid-session previously), symlink `node_modules`, each subagent `cd`s into its absolute worktree path for every command and never touches the main checkout. Remove worktrees + delete branches after each phase's merge lands.
 
 ## Result
-_(filled in after completion)_
+All three phases landed on `main` (commits: `090f43a` selection border, `15a6f4a` color presets/alignment, merge `7e11a9f`, `b09c661` undo/redo, merge into `main`). Final `main` state: `npm run build` clean, `npm run lint` clean (only pre-existing `only-export-components` warnings on `EditorContext.tsx`, now 4 instead of 3 since it exports one more hook), `npm test` 69/69 passing (up from 64 at the start: +2 for color presets, +3 for `transferSnapshot`).
+
+What shipped:
+- **Selection border**: two-pass marching-ants outline (solid black halo + white dash on top) in `SelectionTool.tsx`, visible on any background.
+- **Color Adjust presets**: `COLOR_ADJUST_PRESETS` (Normal/Warm/Cool/Night/Vintage/B&W) as brightness/contrast/saturation combos, one-click buttons above the sliders.
+- **Aligned sliders**: `.color-adjust-controls label` is now a 3-column CSS grid (`84px 1fr 38px`) so Brightness/Contrast/Saturation's tracks and values line up regardless of label text length.
+- **Undo/redo**: snapshot-stack history (`useHistory()` in `EditorContext.tsx`, pure stack mechanics in `state/historyStack.ts`) wired into every pixel-mutating tool (crop, selection delete, bucket fill, color adjust, background removal) plus reset-on-new-document (file load, project load). Undo/Redo buttons in the header + `Ctrl/Cmd+Z` / `Ctrl/Cmd+Shift+Z` shortcuts.
+
+**Not independently verified**: interactive browser behavior (does the border actually look right, does undo/redo actually feel correct end-to-end, do the presets look distinct) — no browser-automation tool was available this session, same limitation as the precedent plan. The dev server does boot cleanly with no startup errors. Worth a `npm run dev` click-through pass to confirm feel before calling this fully done.
