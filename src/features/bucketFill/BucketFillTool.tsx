@@ -1,32 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useCanvasRefs, useEditorDispatch, useEditorState, useHistory } from '../../state/EditorContext'
 import { pointerToCanvasPoint } from '../canvas/coords'
-import type { RGBA } from '../../lib/colorDistance'
+import { hexToRgba, normalizeHex } from '../../lib/hexColor'
 import { floodFill } from './floodFill'
-
-function hexToRgba(hex: string): RGBA {
-  return {
-    r: parseInt(hex.slice(1, 3), 16),
-    g: parseInt(hex.slice(3, 5), 16),
-    b: parseInt(hex.slice(5, 7), 16),
-    a: 255,
-  }
-}
-
-function normalizeHex(raw: string): string | null {
-  const cleaned = raw.trim().replace(/^#/, '')
-  if (/^[0-9a-fA-F]{3}$/.test(cleaned)) {
-    return `#${cleaned
-      .split('')
-      .map((c) => c + c)
-      .join('')
-      .toLowerCase()}`
-  }
-  if (/^[0-9a-fA-F]{6}$/.test(cleaned)) {
-    return `#${cleaned.toLowerCase()}`
-  }
-  return null
-}
 
 export function BucketFillTool() {
   const { selection } = useEditorState()

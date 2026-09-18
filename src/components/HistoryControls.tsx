@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useEditorState, useHistory } from '../state/EditorContext'
+import type { ToolName } from '../types'
 
 /** True for `<input>`, `<textarea>`, and other contenteditable elements — used to keep the
  *  undo/redo keyboard shortcuts from firing while the user is typing (e.g. in the crop
@@ -10,15 +11,21 @@ function isEditableElement(element: Element | null): boolean {
   return (element as HTMLElement).isContentEditable
 }
 
+/** Tools with a genuinely uncommitted in-progress edit or an in-flight async
+ *  operation, where restoring a canvas snapshot underneath them would corrupt
+ *  what's on screen. Every other tool (including Bucket Fill) commits each
+ *  edit atomically with no pending state, so undo/redo is always safe there. */
+const TOOLS_BLOCKING_HISTORY: ToolName[] = ['crop', 'colorAdjust', 'backgroundRemoval']
+
 export function HistoryControls() {
   const { activeTool } = useEditorState()
   const { canUndo, canRedo, undo, redo } = useHistory()
-  const isToolActive = activeTool !== 'none'
+  const blocksHistory = TOOLS_BLOCKING_HISTORY.includes(activeTool)
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 'z') return
-      if (isToolActive || isEditableElement(document.activeElement)) return
+      if (blocksHistory || isEditableElement(document.activeElement)) return
 
       if (event.shiftKey) {
         if (!canRedo) return
@@ -33,14 +40,14 @@ export function HistoryControls() {
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [isToolActive, canUndo, canRedo, undo, redo])
+  }, [blocksHistory, canUndo, canRedo, undo, redo])
 
   return (
     <div className="history-controls">
-      <button type="button" onClick={undo} disabled={!canUndo || isToolActive} aria-label="Undo last edit">
+      <button type="button" onClick={undo} disabled={!canUndo || blocksHistory} aria-label="Undo last edit">
         Undo
       </button>
-      <button type="button" onClick={redo} disabled={!canRedo || isToolActive} aria-label="Redo last undone edit">
+      <button type="button" onClick={redo} disabled={!canRedo || blocksHistory} aria-label="Redo last undone edit">
         Redo
       </button>
     </div>
