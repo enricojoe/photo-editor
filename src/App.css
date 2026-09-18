@@ -473,6 +473,46 @@
   border-color: var(--accent);
 }
 
+.watermark-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.watermark-controls label {
+  display: grid;
+  grid-template-columns: 84px 1fr 38px;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.watermark-controls label span {
+  text-align: right;
+}
+
+.watermark-controls input[type='range'] {
+  width: 100%;
+  min-width: 0;
+}
+
+.watermark-controls__color {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.watermark-controls__hex {
+  width: 90px;
+  text-transform: uppercase;
+}
+
+.watermark-controls__actions {
+  display: flex;
+  gap: 8px;
+}
+
 .processing-overlay {
   display: flex;
   flex-direction: column;
