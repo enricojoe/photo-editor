@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useCanvasRefs, useEditorDispatch } from '../../state/EditorContext'
 import { applyColorFilterToCanvas } from './applyColorFilter'
-import { buildCssFilter, DEFAULT_COLOR_ADJUST } from './colorFilter'
+import { buildCssFilter, COLOR_ADJUST_PRESETS, DEFAULT_COLOR_ADJUST } from './colorFilter'
 
 export function ColorAdjustTool() {
   const { baseCanvasRef } = useCanvasRefs()
@@ -35,8 +35,34 @@ export function ColorAdjustTool() {
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'none' })
   }
 
+  const handleSelectPreset = (values: typeof DEFAULT_COLOR_ADJUST) => {
+    setBrightness(values.brightness)
+    setContrast(values.contrast)
+    setSaturation(values.saturation)
+  }
+
+  const isPresetActive = (values: typeof DEFAULT_COLOR_ADJUST) =>
+    brightness === values.brightness && contrast === values.contrast && saturation === values.saturation
+
   return (
     <div className="color-adjust-controls">
+      <div className="color-adjust-presets" role="group" aria-label="Color presets">
+        {COLOR_ADJUST_PRESETS.map((preset) => (
+          <button
+            key={preset.label}
+            type="button"
+            className={
+              isPresetActive(preset.values)
+                ? 'color-adjust-presets__button color-adjust-presets__button--active'
+                : 'color-adjust-presets__button'
+            }
+            aria-pressed={isPresetActive(preset.values)}
+            onClick={() => handleSelectPreset(preset.values)}
+          >
+            {preset.label}
+          </button>
+        ))}
+      </div>
       <label>
         Brightness
         <input
