@@ -23,6 +23,10 @@ export function Toolbar() {
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'backgroundRemoval' })
   }
 
+  const handleColorAdjustClick = () => {
+    dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'colorAdjust' })
+  }
+
   return (
     <nav className="toolbar" aria-label="Editing tools">
       <LoadImageButton disabled={isToolActive} />
@@ -37,6 +41,9 @@ export function Toolbar() {
       </button>
       <button type="button" onClick={handleBackgroundRemovalClick} disabled={!hasImage || isToolActive}>
         Remove Background
+      </button>
+      <button type="button" onClick={handleColorAdjustClick} disabled={!hasImage || isToolActive}>
+        Color Adjust
       </button>
     </nav>
   )
