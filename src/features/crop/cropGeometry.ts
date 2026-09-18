@@ -88,6 +88,14 @@ export function isInsideRect(point: { x: number; y: number }, rect: CropRect): b
   )
 }
 
+/** The native resize cursor for dragging a given handle. */
+export function cursorForHandle(handle: CropHandle): string {
+  if (handle === 'nw' || handle === 'se') return 'nwse-resize'
+  if (handle === 'ne' || handle === 'sw') return 'nesw-resize'
+  if (handle === 'n' || handle === 's') return 'ns-resize'
+  return 'ew-resize' // 'e' | 'w'
+}
+
 /** "Contains" a (boxW, boxH) box at `ratio`, i.e. the largest rect of that ratio fitting inside it. */
 function fitWithinRatio(boxW: number, boxH: number, ratio: number): { width: number; height: number } {
   if (boxW > boxH * ratio) return { width: boxH * ratio, height: boxH }

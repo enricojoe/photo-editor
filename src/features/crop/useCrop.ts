@@ -8,6 +8,7 @@ import {
   applyAspectToExistingRect,
   aspectConstrainedRect,
   clampPoint,
+  cursorForHandle,
   defaultCropRect,
   hitTestHandle,
   isInsideRect,
@@ -140,5 +141,25 @@ export function useCrop({ imageWidth, imageHeight }: UseCropOptions) {
     }
   }, [])
 
-  return { rect, aspectRatio, setAspectRatio, handlePointerDown, handlePointerMove, handlePointerUp }
+  // Cursor reflects what a click at the pointer's current position would do.
+  // While resizing, the handle is read from the interaction itself rather
+  // than re-hit-tested, so the cursor stays locked even if a fast drag
+  // strays outside the handle's hit zone.
+  const getCursor = useCallback(
+    (event: PointerEvent, canvas: HTMLCanvasElement): string => {
+      const interaction = interactionRef.current
+      if (interaction.mode === 'resizing') return cursorForHandle(interaction.handle)
+      if (interaction.mode === 'moving') return 'grabbing'
+      if (interaction.mode === 'drawing-new') return 'crosshair'
+
+      const point = pointerToCanvasPoint(event, canvas)
+      const rawHandle = hitTestHandle(point, rect, getCanvasScale(canvas))
+      const handle = rawHandle && (aspectRatio === null || CORNER_HANDLES.includes(rawHandle)) ? rawHandle : null
+      if (handle) return cursorForHandle(handle)
+      return isInsideRect(point, rect) ? 'grab' : 'crosshair'
+    },
+    [rect, aspectRatio],
+  )
+
+  return { rect, aspectRatio, setAspectRatio, handlePointerDown, handlePointerMove, handlePointerUp, getCursor }
 }

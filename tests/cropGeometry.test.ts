@@ -5,6 +5,7 @@ import {
   applyAspectToExistingRect,
   aspectConstrainedRect,
   clampPoint,
+  cursorForHandle,
   defaultCropRect,
   handlePositions,
   hitTestHandle,
@@ -88,6 +89,28 @@ describe('isInsideRect', () => {
 
   it('returns false for points outside the rect', () => {
     expect(isInsideRect({ x: 5, y: 5 }, rect)).toBe(false)
+  })
+})
+
+describe('cursorForHandle', () => {
+  it('maps nw/se corners to the nwse-resize cursor', () => {
+    expect(cursorForHandle('nw')).toBe('nwse-resize')
+    expect(cursorForHandle('se')).toBe('nwse-resize')
+  })
+
+  it('maps ne/sw corners to the nesw-resize cursor', () => {
+    expect(cursorForHandle('ne')).toBe('nesw-resize')
+    expect(cursorForHandle('sw')).toBe('nesw-resize')
+  })
+
+  it('maps n/s edges to the ns-resize cursor', () => {
+    expect(cursorForHandle('n')).toBe('ns-resize')
+    expect(cursorForHandle('s')).toBe('ns-resize')
+  })
+
+  it('maps e/w edges to the ew-resize cursor', () => {
+    expect(cursorForHandle('e')).toBe('ew-resize')
+    expect(cursorForHandle('w')).toBe('ew-resize')
   })
 })
 
