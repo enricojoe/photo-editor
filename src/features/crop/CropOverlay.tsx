@@ -23,10 +23,11 @@ export function CropOverlay() {
   const { baseCanvasRef, overlayCanvasRef } = useCanvasRefs()
   const dispatch = useEditorDispatch()
 
-  const { rect, aspectRatio, setAspectRatio, handlePointerDown, handlePointerMove, handlePointerUp } = useCrop({
-    imageWidth: imageWidth ?? 0,
-    imageHeight: imageHeight ?? 0,
-  })
+  const { rect, aspectRatio, setAspectRatio, handlePointerDown, handlePointerMove, handlePointerUp, getCursor } =
+    useCrop({
+      imageWidth: imageWidth ?? 0,
+      imageHeight: imageHeight ?? 0,
+    })
 
   useEffect(() => {
     const overlay = overlayCanvasRef.current
@@ -60,9 +61,18 @@ export function CropOverlay() {
     overlay.style.pointerEvents = 'auto'
     overlay.style.cursor = 'crosshair'
 
-    const onDown = (event: PointerEvent) => handlePointerDown(event, overlay)
-    const onMove = (event: PointerEvent) => handlePointerMove(event, overlay)
-    const onUp = (event: PointerEvent) => handlePointerUp(event, overlay)
+    const onDown = (event: PointerEvent) => {
+      handlePointerDown(event, overlay)
+      overlay.style.cursor = getCursor(event, overlay)
+    }
+    const onMove = (event: PointerEvent) => {
+      handlePointerMove(event, overlay)
+      overlay.style.cursor = getCursor(event, overlay)
+    }
+    const onUp = (event: PointerEvent) => {
+      handlePointerUp(event, overlay)
+      overlay.style.cursor = getCursor(event, overlay)
+    }
 
     overlay.addEventListener('pointerdown', onDown)
     overlay.addEventListener('pointermove', onMove)
@@ -77,7 +87,7 @@ export function CropOverlay() {
       overlay.style.pointerEvents = 'none'
       overlay.style.cursor = ''
     }
-  }, [overlayCanvasRef, handlePointerDown, handlePointerMove, handlePointerUp])
+  }, [overlayCanvasRef, handlePointerDown, handlePointerMove, handlePointerUp, getCursor])
 
   const clearOverlay = () => {
     const overlay = overlayCanvasRef.current
