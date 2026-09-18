@@ -74,7 +74,8 @@
   color: var(--accent-contrast);
 }
 
-.app input[type='text'] {
+.app input[type='text'],
+.app input[type='number'] {
   padding: 6px 10px;
   font: inherit;
   font-size: 14px;
@@ -82,6 +83,10 @@
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+}
+
+.app input[type='number'] {
+  width: 100%;
 }
 
 .app input[type='color'] {
@@ -330,6 +335,22 @@
   background-color: var(--accent);
   color: var(--accent-contrast);
   border-color: var(--accent);
+}
+
+.crop-custom-size {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.crop-custom-size__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--text-h);
 }
 
 .crop-controls {
