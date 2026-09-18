@@ -5,6 +5,9 @@
 }
 
 .app__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 12px 20px;
   border-bottom: 1px solid var(--border);
 }
@@ -12,6 +15,10 @@
 .app__header h1 {
   font-size: 20px;
   margin: 0;
+}
+
+.header-export {
+  flex: 0 0 auto;
 }
 
 .visually-hidden {

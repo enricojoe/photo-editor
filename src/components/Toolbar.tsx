@@ -1,15 +1,11 @@
-import { useState } from 'react'
-import { useCanvasRefs, useEditorDispatch, useEditorState } from '../state/EditorContext'
+import { useEditorDispatch, useEditorState } from '../state/EditorContext'
 import { LoadImageButton } from '../features/imageLoad/LoadImageButton'
-import { ExportDialog } from '../features/export/ExportDialog'
 
 export function Toolbar() {
   const { imageWidth, imageHeight, activeTool } = useEditorState()
   const dispatch = useEditorDispatch()
-  const { baseCanvasRef } = useCanvasRefs()
   const hasImage = imageWidth !== null && imageHeight !== null
   const isToolActive = activeTool !== 'none'
-  const [isExportOpen, setIsExportOpen] = useState(false)
 
   const handleCropClick = () => {
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'crop' })
@@ -42,15 +38,6 @@ export function Toolbar() {
       <button type="button" onClick={handleBackgroundRemovalClick} disabled={!hasImage || isToolActive}>
         Remove Background
       </button>
-      <button
-        type="button"
-        className="btn-primary"
-        onClick={() => setIsExportOpen(true)}
-        disabled={!hasImage || isToolActive}
-      >
-        Export
-      </button>
-      {isExportOpen && <ExportDialog canvasRef={baseCanvasRef} onClose={() => setIsExportOpen(false)} />}
     </nav>
   )
 }
