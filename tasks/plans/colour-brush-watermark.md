@@ -20,18 +20,25 @@ Three new requests:
 - [x] Verified build/lint/test (69/69) before spawning feature agents.
 
 ### Step 1 — two parallel subagents (isolated worktrees)
-- [ ] Agent A — "Colour" group + Brush tool: `ToolName` gains `'brush'`; new `src/features/brush/BrushTool.tsx` + `drawBrushStroke.ts` (color + size, selection-clipped freehand paint directly on the base canvas, one `pushSnapshot()` per stroke); `Toolbar.tsx` groups Bucket Fill + Brush under a "Colour" label; `CanvasStage.tsx` gets the `'brush'` branch; `App.css` additions.
-- [ ] Agent B — Watermark tool: `ToolName` gains `'watermark'`; new `src/features/watermark/applyWatermark.ts` (shared `drawWatermark` used for both live preview and bake) + `WatermarkTool.tsx` (text/image mode toggle, free-drag placement, opacity/size, Apply/Cancel); extracts `decodeImage` out of `loadImage.ts` into `src/lib/decodeImage.ts` for reuse; `Toolbar.tsx`/`CanvasStage.tsx` additions; adds `'watermark'` to `TOOLS_BLOCKING_HISTORY`.
-- Both agents were told upfront to expect a small "sibling addition" merge conflict in `types/index.ts` / `Toolbar.tsx` / `CanvasStage.tsx`.
+- [x] Agent A — "Colour" group + Brush tool: `ToolName` gains `'brush'`; new `src/features/brush/BrushTool.tsx` + `drawBrushStroke.ts` (color + size 1–50, selection-clipped freehand paint directly on the base canvas via `ctx.clip()` built from `selection.shapeData`, one `pushSnapshot()` per stroke via `pointerdown`, `setPointerCapture` so a stroke doesn't drop if the cursor leaves the overlay); `Toolbar.tsx` groups Bucket Fill + Brush under a "Colour" label; `CanvasStage.tsx` gets the `'brush'` branch; `App.css` additions (`.toolbar__group`, `.toolbar__group-label`, `.brush-controls`). Build/lint/test verified (71/71).
+- [x] Agent B — Watermark tool: `ToolName` gains `'watermark'`; new `src/features/watermark/applyWatermark.ts` (`WatermarkOptions` discriminated union text/image, shared `drawWatermark` used for both live overlay preview and final bake so they can't drift) + `WatermarkTool.tsx` (text/image mode toggle reusing `.selection-shape-toggle`, free-drag placement — click/drag anywhere on the overlay moves the watermark, clamped to canvas bounds, no hit-testing — opacity/size sliders, Apply disabled until there's real content, Cancel discards); extracted `decodeImage` out of `loadImage.ts` into `src/lib/decodeImage.ts` for reuse by the logo upload; `Toolbar.tsx`/`CanvasStage.tsx` additions; added `'watermark'` to `TOOLS_BLOCKING_HISTORY`. Build/lint/test verified (73/73).
+- Both agents were told upfront to expect a small "sibling addition" merge conflict in `types/index.ts` / `Toolbar.tsx` / `CanvasStage.tsx` — in practice only `types/index.ts` actually conflicted (both branches edited the same union-type line); `Toolbar.tsx`/`CanvasStage.tsx`/`App.css` auto-merged cleanly since the two agents' insertions landed at different lines.
 
 ### Merge
-- [ ] Merge `feat/colour-brush-group` then `feat/watermark` into `main`, resolving the expected small conflicts by keeping both sides' additions.
-- [ ] `npm run build && npm run lint && npm test` on merged `main`; remove both worktrees/branches.
+- [x] Merged `feat/colour-brush-group` (fast-forward, no conflicts) then `feat/watermark` into `main` (one conflict in `types/index.ts`'s `ToolName` union, resolved by keeping both new members and reformatting to a multi-line union for readability).
+- [x] `npm run build && npm run lint && npm test` on merged `main` — clean, 75/75 tests; both worktrees/branches removed.
 
 ### Final verification
-- [ ] Full build/lint/test on final `main`.
-- [ ] `npm run dev` boot check (no browser-automation tool available this session — not a real interactive click-through, call that out explicitly).
-- [ ] Update master `tasks/todo.md`.
+- [x] Full build/lint/test on final `main` — clean build, only the same 4 pre-existing `only-export-components` warnings, 75/75 tests passing.
+- [x] `npm run dev` — boots cleanly with no console/runtime errors. **Not done**: an actual interactive click-through (dragging the watermark, painting with the brush, confirming selection-clipping visually) — no browser-automation tool was available this session, same caveat as prior rounds.
+- [x] Updated master `tasks/todo.md`.
 
 ## Result
-_(filled in after completion)_
+All work landed on `main` (`c0df51d` Colour/Brush, `f60fcd7` Watermark, merge `64cb87f`, plus the prep commit `6bef589`). Final state: build clean, lint clean (only pre-existing warnings), 75/75 tests passing (up from 69 at the start of this round: +2 brush, +4 watermark).
+
+What shipped:
+- **Undo/redo now works during Bucket Fill** (and Selection/Brush, as a natural consequence of the correct fix): `HistoryControls.tsx` now blocks only tools with genuinely uncommitted/async state (`crop`, `colorAdjust`, `backgroundRemoval`, `watermark`) instead of blocking on any active tool.
+- **"Colour" toolbar group**: Bucket Fill + new **Brush** tool (freehand paint, adjustable color/size, respects the active selection via canvas clipping) grouped under a "Colour" label in the left rail.
+- **Watermark tool**: text or uploaded logo image, freely draggable placement, adjustable opacity/size, live preview on the overlay before baking in via Apply.
+
+**Not independently verified**: real interactive browser behavior (drag feel, brush strokes, selection clipping visually correct) — no browser-automation tool available this session. The dev server does boot with no errors. Worth a `npm run dev` click-through to confirm feel.

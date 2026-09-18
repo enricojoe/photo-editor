@@ -10,4 +10,4 @@
 - [x] Un-stretch the "Choose an image" button (card stays full width, button back to natural size); revert export UI from popup dialog back to inline dropdown -> See tasks/plans/export-dialog-popup.md (Result section updated)
 - [x] Custom crop resolution input, adaptive crop cursor, move Export to header, new Color Adjust tool (done via 4 parallel subagents in isolated git worktrees, merged into main) -> See tasks/plans/parallel-crop-cursor-export-color-features.md
 - [x] Stronger selection border, undo/redo, Color Adjust presets, aligned sliders (phased subagents in isolated git worktrees) -> See tasks/plans/selection-border-undo-redo-color-presets-alignment.md
-- [ ] Bucket-fill-clickable undo/redo, "Colour" tool group + Brush, Watermark tool (parallel subagents in isolated git worktrees) -> See tasks/plans/colour-brush-watermark.md
+- [x] Bucket-fill-clickable undo/redo, "Colour" tool group + Brush, Watermark tool (parallel subagents in isolated git worktrees) -> See tasks/plans/colour-brush-watermark.md
