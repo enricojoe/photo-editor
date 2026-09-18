@@ -8,6 +8,7 @@ export type ToolName =
   | 'selection'
   | 'bucketFill'
   | 'brush'
+  | 'colorPicker'
   | 'backgroundRemoval'
   | 'colorAdjust'
   | 'watermark'
@@ -17,4 +18,5 @@ export interface EditorState {
   imageWidth: number | null
   imageHeight: number | null
   selection: Selection | null
+  pickedColor: string | null
 }

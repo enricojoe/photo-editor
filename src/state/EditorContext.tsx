@@ -17,12 +17,14 @@ type EditorAction =
   | { type: 'SET_ACTIVE_TOOL'; tool: ToolName }
   | { type: 'IMAGE_LOADED'; width: number; height: number }
   | { type: 'SET_SELECTION'; selection: Selection | null }
+  | { type: 'SET_PICKED_COLOR'; color: string }
 
 const initialState: EditorState = {
   activeTool: 'none',
   imageWidth: null,
   imageHeight: null,
   selection: null,
+  pickedColor: null,
 }
 
 function editorReducer(state: EditorState, action: EditorAction): EditorState {
@@ -33,6 +35,8 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       return { ...state, imageWidth: action.width, imageHeight: action.height, selection: null }
     case 'SET_SELECTION':
       return { ...state, selection: action.selection }
+    case 'SET_PICKED_COLOR':
+      return { ...state, pickedColor: action.color }
     default:
       return state
   }

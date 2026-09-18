@@ -482,6 +482,34 @@
   margin: 0;
 }
 
+.color-picker-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.color-picker-controls__swatch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-h);
+  font-size: 14px;
+}
+
+.color-picker-controls__swatch {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.color-picker-controls__hint {
+  font-size: 13px;
+  color: var(--text);
+  margin: 0;
+}
+
 .color-adjust-controls {
   display: flex;
   flex-direction: column;

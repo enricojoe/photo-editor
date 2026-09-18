@@ -23,6 +23,10 @@ export function Toolbar() {
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'brush' })
   }
 
+  const handleColorPickerClick = () => {
+    dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'colorPicker' })
+  }
+
   const handleBackgroundRemovalClick = () => {
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'backgroundRemoval' })
   }
@@ -51,6 +55,9 @@ export function Toolbar() {
         </button>
         <button type="button" onClick={handleBrushClick} disabled={!hasImage || isToolActive}>
           Brush
+        </button>
+        <button type="button" onClick={handleColorPickerClick} disabled={!hasImage || isToolActive}>
+          Color Picker
         </button>
       </div>
       <button type="button" onClick={handleBackgroundRemovalClick} disabled={!hasImage || isToolActive}>

@@ -5,11 +5,11 @@ import { normalizeHex } from '../../lib/hexColor'
 import { strokeBrushSegment } from './drawBrushStroke'
 
 export function BrushTool() {
-  const { selection } = useEditorState()
+  const { selection, pickedColor } = useEditorState()
   const { baseCanvasRef, overlayCanvasRef } = useCanvasRefs()
   const dispatch = useEditorDispatch()
   const { pushSnapshot } = useHistory()
-  const [color, setColor] = useState('#e63946')
+  const [color, setColor] = useState(pickedColor ?? '#e63946')
   const [hexText, setHexText] = useState(color)
   const [syncedColor, setSyncedColor] = useState(color)
   const [size, setSize] = useState(10)
