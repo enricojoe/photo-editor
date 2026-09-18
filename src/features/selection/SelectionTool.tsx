@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useCanvasRefs, useEditorDispatch, useEditorState } from '../../state/EditorContext'
+import { useCanvasRefs, useEditorDispatch, useEditorState, useHistory } from '../../state/EditorContext'
 import { useSelection } from './useSelection'
 import { clearSelectionPixels } from './clearSelection'
 import type { Selection } from './selectionGeometry'
@@ -8,6 +8,7 @@ export function SelectionTool() {
   const { imageWidth, imageHeight, selection } = useEditorState()
   const { baseCanvasRef, overlayCanvasRef } = useCanvasRefs()
   const dispatch = useEditorDispatch()
+  const { pushSnapshot } = useHistory()
 
   const handleCommit = (next: Selection | null) => {
     dispatch({ type: 'SET_SELECTION', selection: next })
@@ -94,6 +95,7 @@ export function SelectionTool() {
   const handleDelete = () => {
     const canvas = baseCanvasRef.current
     if (!canvas || !selection) return
+    pushSnapshot()
     clearSelectionPixels(canvas, selection)
   }
 

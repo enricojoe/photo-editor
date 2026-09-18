@@ -1,11 +1,12 @@
 import { useCallback, useState } from 'react'
-import { useCanvasRefs, useEditorDispatch } from '../../state/EditorContext'
+import { useCanvasRefs, useEditorDispatch, useHistory } from '../../state/EditorContext'
 import { loadImageFileToCanvas } from './loadImage'
 
 /** Shared file-loading logic for the empty-state dropzone and the toolbar's "Load Image" button. */
 export function useImageFileLoader() {
   const { baseCanvasRef, overlayCanvasRef } = useCanvasRefs()
   const dispatch = useEditorDispatch()
+  const { resetHistory } = useHistory()
   const [error, setError] = useState<string | null>(null)
 
   const loadFile = useCallback(
@@ -23,11 +24,12 @@ export function useImageFileLoader() {
           overlayCanvas.height = height
         }
         dispatch({ type: 'IMAGE_LOADED', width, height })
+        resetHistory()
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load image')
       }
     },
-    [baseCanvasRef, overlayCanvasRef, dispatch],
+    [baseCanvasRef, overlayCanvasRef, dispatch, resetHistory],
   )
 
   return { loadFile, error }

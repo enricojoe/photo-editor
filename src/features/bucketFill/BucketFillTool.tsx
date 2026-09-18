@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useCanvasRefs, useEditorDispatch, useEditorState } from '../../state/EditorContext'
+import { useCanvasRefs, useEditorDispatch, useEditorState, useHistory } from '../../state/EditorContext'
 import { pointerToCanvasPoint } from '../canvas/coords'
 import type { RGBA } from '../../lib/colorDistance'
 import { floodFill } from './floodFill'
@@ -32,6 +32,7 @@ export function BucketFillTool() {
   const { selection } = useEditorState()
   const { baseCanvasRef, overlayCanvasRef } = useCanvasRefs()
   const dispatch = useEditorDispatch()
+  const { pushSnapshot } = useHistory()
   const [color, setColor] = useState('#e63946')
   const [hexText, setHexText] = useState(color)
   const [syncedColor, setSyncedColor] = useState(color)
@@ -57,6 +58,7 @@ export function BucketFillTool() {
       if (!ctx) return
       const point = pointerToCanvasPoint(event, overlay)
       const imageData = ctx.getImageData(0, 0, baseCanvas.width, baseCanvas.height)
+      pushSnapshot()
       floodFill(imageData, point.x, point.y, fillColor, tolerance, selection?.mask)
       ctx.putImageData(imageData, 0, 0)
     }
@@ -67,7 +69,7 @@ export function BucketFillTool() {
       overlay.style.pointerEvents = 'none'
       overlay.style.cursor = ''
     }
-  }, [overlayCanvasRef, baseCanvasRef, color, tolerance, selection])
+  }, [overlayCanvasRef, baseCanvasRef, color, tolerance, selection, pushSnapshot])
 
   const handleDone = () => {
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'none' })

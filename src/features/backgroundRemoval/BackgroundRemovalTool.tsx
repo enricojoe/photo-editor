@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useCanvasRefs, useEditorDispatch } from '../../state/EditorContext'
+import { useCanvasRefs, useEditorDispatch, useHistory } from '../../state/EditorContext'
 import { removeBackgroundFromCanvas } from './removeBackground'
 
 type Status = { phase: 'processing'; label: string } | { phase: 'error'; message: string }
@@ -7,6 +7,7 @@ type Status = { phase: 'processing'; label: string } | { phase: 'error'; message
 export function BackgroundRemovalTool() {
   const { baseCanvasRef, overlayCanvasRef } = useCanvasRefs()
   const dispatch = useEditorDispatch()
+  const { pushSnapshot } = useHistory()
   const [status, setStatus] = useState<Status>({ phase: 'processing', label: 'Starting…' })
   const [attempt, setAttempt] = useState(0)
 
@@ -16,6 +17,7 @@ export function BackgroundRemovalTool() {
     let cancelled = false
 
     setStatus({ phase: 'processing', label: 'Starting…' })
+    pushSnapshot()
 
     removeBackgroundFromCanvas(canvas, {
       onProgress: (key, current, total) => {
@@ -45,7 +47,7 @@ export function BackgroundRemovalTool() {
     return () => {
       cancelled = true
     }
-  }, [attempt, baseCanvasRef, overlayCanvasRef, dispatch])
+  }, [attempt, baseCanvasRef, overlayCanvasRef, dispatch, pushSnapshot])
 
   const handleRetry = () => setAttempt((n) => n + 1)
   const handleCancel = () => dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'none' })

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useCanvasRefs, useEditorDispatch, useEditorState } from '../../state/EditorContext'
+import { useCanvasRefs, useEditorDispatch, useEditorState, useHistory } from '../../state/EditorContext'
 import { getCanvasScale } from '../canvas/coords'
 import { useCrop } from './useCrop'
 import { applyCropToCanvas } from './applyCrop'
@@ -22,6 +22,7 @@ export function CropOverlay() {
   const { imageWidth, imageHeight } = useEditorState()
   const { baseCanvasRef, overlayCanvasRef } = useCanvasRefs()
   const dispatch = useEditorDispatch()
+  const { pushSnapshot } = useHistory()
 
   const {
     rect,
@@ -111,6 +112,7 @@ export function CropOverlay() {
     const baseCanvas = baseCanvasRef.current
     if (!baseCanvas) return
 
+    pushSnapshot()
     const cropped = applyCropToCanvas(baseCanvas, rect)
     const overlay = overlayCanvasRef.current
     if (overlay) {

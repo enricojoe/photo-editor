@@ -37,18 +37,18 @@ So: run item 1 and items 3+4 in two parallel worktrees (genuinely independent fi
 - [ ] `npm run build && npm run lint && npm test` on merged `main`; remove both worktrees/branches.
 
 ### Phase 2 — undo/redo (single subagent, off updated `main`)
-- [ ] Worktree `../PhotoEditor-undo-redo`, branch `feat/undo-redo`.
-- [ ] `EditorContext.tsx`: add `HistorySnapshot {width, height, imageData}`, a `HistoryContext` created inside `EditorProvider` (closes over existing canvas refs + dispatch), two `useRef` stacks (undo/redo) + a re-render counter, and `useHistory()` exposing `{canUndo, canRedo, pushSnapshot, resetHistory, undo, redo}`.
+- [x] Worktree `../PhotoEditor-undo-redo`, branch `feat/undo-redo`.
+- [x] `EditorContext.tsx`: add `HistorySnapshot {width, height, imageData}`, a `HistoryContext` created inside `EditorProvider` (closes over existing canvas refs + dispatch), two `useRef` stacks (undo/redo) + a `{canUndo, canRedo}` state object synced after every stack mutation (kept out of the memo body so refs are never read during render — avoids the `react(refs)` lint rule), and `useHistory()` exposing `{canUndo, canRedo, pushSnapshot, resetHistory, undo, redo}`.
   - `pushSnapshot()`: `getImageData` current canvas → push to undo stack, clear redo stack. Call immediately before a mutation.
   - `resetHistory()`: clear both stacks. Call on brand-new document load.
-  - `undo`/`redo`: snapshot current canvas onto the other stack, pop target, resize both canvases + `putImageData`, `dispatch(IMAGE_LOADED)` + `dispatch(SET_SELECTION null)`.
-- [ ] Wire `pushSnapshot()` before the mutation in: `CropOverlay.handleConfirm`, `SelectionTool.handleDelete`, `BucketFillTool`'s fill click handler, `ColorAdjustTool.handleApply`, `BackgroundRemovalTool`'s effect (before calling `removeBackgroundFromCanvas`).
-- [ ] Wire `resetHistory()` after `IMAGE_LOADED` in: `useImageFileLoader.loadFile`, `ProjectManagerPanel.handleLoad`.
-- [ ] New `HistoryControls.tsx` in the header (left of `HeaderExport`): Undo/Redo buttons (disabled per `canUndo`/`canRedo`/active-tool), global `Ctrl/Cmd+Z` / `Ctrl/Cmd+Shift+Z` keyboard shortcuts (ignored while an input/textarea has focus). Matching `.history-controls` CSS.
-- [ ] Verify build/lint/test.
+  - `undo`/`redo`: snapshot current canvas onto the other stack, pop target (via a small pure `transferSnapshot` helper extracted to `src/state/historyStack.ts`, unit-tested), resize both canvases + `putImageData`, `dispatch(IMAGE_LOADED)` + `dispatch(SET_SELECTION null)`.
+- [x] Wire `pushSnapshot()` before the mutation in: `CropOverlay.handleConfirm`, `SelectionTool.handleDelete`, `BucketFillTool`'s fill click handler, `ColorAdjustTool.handleApply`, `BackgroundRemovalTool`'s effect (before calling `removeBackgroundFromCanvas`, once per `attempt` including retries).
+- [x] Wire `resetHistory()` after `IMAGE_LOADED` in: `useImageFileLoader.loadFile`, `ProjectManagerPanel.handleLoad`.
+- [x] New `HistoryControls.tsx` in the header (left of `HeaderExport`, grouped in a new `.app__header-actions` flex wrapper): Undo/Redo buttons (disabled per `canUndo`/`canRedo`/active-tool), global `Ctrl/Cmd+Z` / `Ctrl/Cmd+Shift+Z` keyboard shortcuts (ignored while an input/textarea/contenteditable has focus, or a tool is active). Matching `.history-controls` CSS.
+- [x] Verify build/lint/test — clean build, lint has only the pre-existing `only-export-components` warning category (now 4 occurrences instead of 3, same convention as before), 69/69 tests pass (66 existing + 3 new for `transferSnapshot`).
 
 ### Merge Phase 2
-- [ ] Merge `feat/undo-redo` → `main`; `npm run build && npm run lint && npm test`; remove worktree/branch.
+- [ ] Merge `feat/undo-redo` → `main`; `npm run build && npm run lint && npm test`; remove worktree/branch. (Not done by this subagent — implementation only, per its task scope; merge is the project-manager thread's job.)
 
 ### Final verification
 - [ ] Full build/lint/test on final `main`.

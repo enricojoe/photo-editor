@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useCanvasRefs, useEditorDispatch, useEditorState } from '../../state/EditorContext'
+import { useCanvasRefs, useEditorDispatch, useEditorState, useHistory } from '../../state/EditorContext'
 import { createThumbnailDataUrl, decodeDataUrlToCanvas } from '../../lib/canvasUtils'
 import { deleteProject, listProjects, loadProjectRecord, saveProject } from './storage'
 import type { ProjectSummary } from './types'
@@ -10,6 +10,7 @@ export function ProjectManagerPanel() {
   const { imageWidth, imageHeight, activeTool } = useEditorState()
   const { baseCanvasRef, overlayCanvasRef } = useCanvasRefs()
   const dispatch = useEditorDispatch()
+  const { resetHistory } = useHistory()
 
   const [isOpen, setIsOpen] = useState(false)
   const [projects, setProjects] = useState<ProjectSummary[]>([])
@@ -64,6 +65,7 @@ export function ProjectManagerPanel() {
       overlay.height = height
     }
     dispatch({ type: 'IMAGE_LOADED', width, height })
+    resetHistory()
     setMessage(`Loaded "${record.name}".`)
     setIsOpen(false)
   }

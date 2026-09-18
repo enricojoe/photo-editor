@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useCanvasRefs, useEditorDispatch } from '../../state/EditorContext'
+import { useCanvasRefs, useEditorDispatch, useHistory } from '../../state/EditorContext'
 import { applyColorFilterToCanvas } from './applyColorFilter'
 import { buildCssFilter, COLOR_ADJUST_PRESETS, DEFAULT_COLOR_ADJUST } from './colorFilter'
 
 export function ColorAdjustTool() {
   const { baseCanvasRef } = useCanvasRefs()
   const dispatch = useEditorDispatch()
+  const { pushSnapshot } = useHistory()
   const [brightness, setBrightness] = useState(DEFAULT_COLOR_ADJUST.brightness)
   const [contrast, setContrast] = useState(DEFAULT_COLOR_ADJUST.contrast)
   const [saturation, setSaturation] = useState(DEFAULT_COLOR_ADJUST.saturation)
@@ -24,6 +25,7 @@ export function ColorAdjustTool() {
   const handleApply = () => {
     const baseCanvas = baseCanvasRef.current
     if (!baseCanvas) return
+    pushSnapshot()
     applyColorFilterToCanvas(baseCanvas, filter)
     baseCanvas.style.filter = ''
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'none' })

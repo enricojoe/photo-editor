@@ -21,6 +21,18 @@
   flex: 0 0 auto;
 }
 
+.app__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.history-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
