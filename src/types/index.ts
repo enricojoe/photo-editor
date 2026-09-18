@@ -2,7 +2,15 @@ import type { Selection } from '../features/selection/selectionGeometry'
 
 export type { Selection }
 
-export type ToolName = 'none' | 'crop' | 'selection' | 'bucketFill' | 'brush' | 'backgroundRemoval' | 'colorAdjust'
+export type ToolName =
+  | 'none'
+  | 'crop'
+  | 'selection'
+  | 'bucketFill'
+  | 'brush'
+  | 'backgroundRemoval'
+  | 'colorAdjust'
+  | 'watermark'
 
 export interface EditorState {
   activeTool: ToolName

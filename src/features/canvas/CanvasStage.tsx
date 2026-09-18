@@ -6,6 +6,7 @@ import { BucketFillTool } from '../bucketFill/BucketFillTool'
 import { BrushTool } from '../brush/BrushTool'
 import { BackgroundRemovalTool } from '../backgroundRemoval/BackgroundRemovalTool'
 import { ColorAdjustTool } from '../colorAdjust/ColorAdjustTool'
+import { WatermarkTool } from '../watermark/WatermarkTool'
 
 export function CanvasStage() {
   const { imageWidth, imageHeight, activeTool } = useEditorState()
@@ -58,6 +59,12 @@ export function CanvasStage() {
             <>
               <h2 className="canvas-stage__sidebar-title">Color Adjust</h2>
               <ColorAdjustTool />
+            </>
+          )}
+          {activeTool === 'watermark' && (
+            <>
+              <h2 className="canvas-stage__sidebar-title">Watermark</h2>
+              <WatermarkTool />
             </>
           )}
         </aside>

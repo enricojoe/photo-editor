@@ -1,30 +1,8 @@
+import { decodeImage } from '../../lib/decodeImage'
+
 export interface LoadedImageSize {
   width: number
   height: number
-}
-
-async function decodeImage(file: File): Promise<ImageBitmap | HTMLImageElement> {
-  if (typeof createImageBitmap === 'function') {
-    try {
-      return await createImageBitmap(file)
-    } catch {
-      // Some formats (e.g. certain HEIC/SVG variants) aren't supported by
-      // createImageBitmap in every browser — fall back to an <img> decode.
-    }
-  }
-
-  const objectUrl = URL.createObjectURL(file)
-  try {
-    const img = new Image()
-    await new Promise<void>((resolve, reject) => {
-      img.onload = () => resolve()
-      img.onerror = () => reject(new Error('Could not decode this image file'))
-      img.src = objectUrl
-    })
-    return img
-  } finally {
-    URL.revokeObjectURL(objectUrl)
-  }
 }
 
 /**

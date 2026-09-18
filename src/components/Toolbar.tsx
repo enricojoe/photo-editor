@@ -31,6 +31,10 @@ export function Toolbar() {
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'colorAdjust' })
   }
 
+  const handleWatermarkClick = () => {
+    dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'watermark' })
+  }
+
   return (
     <nav className="toolbar" aria-label="Editing tools">
       <LoadImageButton disabled={isToolActive} />
@@ -54,6 +58,9 @@ export function Toolbar() {
       </button>
       <button type="button" onClick={handleColorAdjustClick} disabled={!hasImage || isToolActive}>
         Color Adjust
+      </button>
+      <button type="button" onClick={handleWatermarkClick} disabled={!hasImage || isToolActive}>
+        Watermark
       </button>
     </nav>
   )
