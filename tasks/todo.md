@@ -8,3 +8,4 @@
 - [x] Replace inline export dropdown with a popup dialog (format, quality, filename) -> See tasks/plans/export-dialog-popup.md
 - [x] Fix dropzone still half-width (hidden attribute defeated by CSS) and inconsistent crop handle sizing (buffer-vs-CSS pixel scale) -> See tasks/plans/dropzone-hidden-fix-and-crop-handle-scaling.md
 - [x] Un-stretch the "Choose an image" button (card stays full width, button back to natural size); revert export UI from popup dialog back to inline dropdown -> See tasks/plans/export-dialog-popup.md (Result section updated)
+- [x] Custom crop resolution input, adaptive crop cursor, move Export to header, new Color Adjust tool (done via 4 parallel subagents in isolated git worktrees, merged into main) -> See tasks/plans/parallel-crop-cursor-export-color-features.md
