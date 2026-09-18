@@ -9,6 +9,7 @@ import {
   aspectConstrainedRect,
   clampPoint,
   cursorForHandle,
+  customSizedRect,
   defaultCropRect,
   hitTestHandle,
   isInsideRect,
@@ -46,6 +47,17 @@ export function useCrop({ imageWidth, imageHeight }: UseCropOptions) {
       if (ratio !== null) {
         setRect((prev) => applyAspectToExistingRect(prev, ratio, imageWidth, imageHeight))
       }
+    },
+    [imageWidth, imageHeight],
+  )
+
+  // Locks aspectRatio to the applied rect's actual ratio (not the raw
+  // width/height args) so it stays consistent after customSizedRect clamps.
+  const setCustomSize = useCallback(
+    (width: number, height: number) => {
+      const next = customSizedRect(width, height, imageWidth, imageHeight)
+      setRect(next)
+      setAspectRatioState(next.width / next.height)
     },
     [imageWidth, imageHeight],
   )
@@ -161,5 +173,14 @@ export function useCrop({ imageWidth, imageHeight }: UseCropOptions) {
     [rect, aspectRatio],
   )
 
-  return { rect, aspectRatio, setAspectRatio, handlePointerDown, handlePointerMove, handlePointerUp, getCursor }
+  return {
+    rect,
+    aspectRatio,
+    setAspectRatio,
+    setCustomSize,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    getCursor,
+  }
 }

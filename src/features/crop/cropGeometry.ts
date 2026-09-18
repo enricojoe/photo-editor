@@ -42,6 +42,22 @@ export function defaultCropRect(imageWidth: number, imageHeight: number): CropRe
   }
 }
 
+export function customSizedRect(
+  width: number,
+  height: number,
+  imageWidth: number,
+  imageHeight: number,
+): CropRect {
+  const clampedWidth = Math.min(Math.max(Math.round(width), MIN_CROP_SIZE), imageWidth)
+  const clampedHeight = Math.min(Math.max(Math.round(height), MIN_CROP_SIZE), imageHeight)
+  return {
+    x: Math.round((imageWidth - clampedWidth) / 2),
+    y: Math.round((imageHeight - clampedHeight) / 2),
+    width: clampedWidth,
+    height: clampedHeight,
+  }
+}
+
 export function handlePositions(rect: CropRect): Record<CropHandle, { x: number; y: number }> {
   const { x, y, width, height } = rect
   return {

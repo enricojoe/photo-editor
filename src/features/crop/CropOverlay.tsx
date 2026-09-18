@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useCanvasRefs, useEditorDispatch, useEditorState } from '../../state/EditorContext'
 import { getCanvasScale } from '../canvas/coords'
 import { useCrop } from './useCrop'
@@ -23,11 +23,23 @@ export function CropOverlay() {
   const { baseCanvasRef, overlayCanvasRef } = useCanvasRefs()
   const dispatch = useEditorDispatch()
 
-  const { rect, aspectRatio, setAspectRatio, handlePointerDown, handlePointerMove, handlePointerUp, getCursor } =
-    useCrop({
-      imageWidth: imageWidth ?? 0,
-      imageHeight: imageHeight ?? 0,
-    })
+  const {
+    rect,
+    aspectRatio,
+    setAspectRatio,
+    setCustomSize,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    getCursor,
+  } = useCrop({
+    imageWidth: imageWidth ?? 0,
+    imageHeight: imageHeight ?? 0,
+  })
+
+  const [customActive, setCustomActive] = useState(false)
+  const [customWidth, setCustomWidth] = useState('')
+  const [customHeight, setCustomHeight] = useState('')
 
   useEffect(() => {
     const overlay = overlayCanvasRef.current
@@ -116,6 +128,32 @@ export function CropOverlay() {
 
   const canConfirm = rect.width >= MIN_CROP_SIZE && rect.height >= MIN_CROP_SIZE
 
+  const handleSelectPreset = (value: number | null) => {
+    setCustomActive(false)
+    setAspectRatio(value)
+  }
+
+  const handleSelectCustom = () => {
+    setCustomActive(true)
+    setCustomWidth(String(Math.round(rect.width)))
+    setCustomHeight(String(Math.round(rect.height)))
+  }
+
+  const parsedCustomWidth = Number(customWidth)
+  const parsedCustomHeight = Number(customHeight)
+  const canApplyCustomSize =
+    customWidth.trim() !== '' &&
+    customHeight.trim() !== '' &&
+    Number.isFinite(parsedCustomWidth) &&
+    Number.isFinite(parsedCustomHeight) &&
+    parsedCustomWidth > 0 &&
+    parsedCustomHeight > 0
+
+  const handleApplyCustomSize = () => {
+    if (!canApplyCustomSize) return
+    setCustomSize(parsedCustomWidth, parsedCustomHeight)
+  }
+
   return (
     <>
       <div className="crop-presets" role="group" aria-label="Aspect ratio">
@@ -124,15 +162,52 @@ export function CropOverlay() {
             key={preset.label}
             type="button"
             className={
-              aspectRatio === preset.value ? 'crop-presets__button crop-presets__button--active' : 'crop-presets__button'
+              aspectRatio === preset.value && !customActive
+                ? 'crop-presets__button crop-presets__button--active'
+                : 'crop-presets__button'
             }
-            aria-pressed={aspectRatio === preset.value}
-            onClick={() => setAspectRatio(preset.value)}
+            aria-pressed={aspectRatio === preset.value && !customActive}
+            onClick={() => handleSelectPreset(preset.value)}
           >
             {preset.label}
           </button>
         ))}
+        <button
+          type="button"
+          className={customActive ? 'crop-presets__button crop-presets__button--active' : 'crop-presets__button'}
+          aria-pressed={customActive}
+          onClick={handleSelectCustom}
+        >
+          Custom
+        </button>
       </div>
+      {customActive && (
+        <div className="crop-custom-size">
+          <label className="crop-custom-size__field">
+            Width
+            <input
+              type="number"
+              min={MIN_CROP_SIZE}
+              max={imageWidth ?? undefined}
+              value={customWidth}
+              onChange={(event) => setCustomWidth(event.target.value)}
+            />
+          </label>
+          <label className="crop-custom-size__field">
+            Height
+            <input
+              type="number"
+              min={MIN_CROP_SIZE}
+              max={imageHeight ?? undefined}
+              value={customHeight}
+              onChange={(event) => setCustomHeight(event.target.value)}
+            />
+          </label>
+          <button type="button" onClick={handleApplyCustomSize} disabled={!canApplyCustomSize}>
+            Apply
+          </button>
+        </div>
+      )}
       <div className="crop-controls">
         <button type="button" className="btn-primary" onClick={handleConfirm} disabled={!canConfirm}>
           Confirm Crop

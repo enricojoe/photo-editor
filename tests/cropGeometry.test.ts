@@ -6,6 +6,7 @@ import {
   aspectConstrainedRect,
   clampPoint,
   cursorForHandle,
+  customSizedRect,
   defaultCropRect,
   handlePositions,
   hitTestHandle,
@@ -23,6 +24,22 @@ describe('defaultCropRect', () => {
     const rect = defaultCropRect(4, 4)
     expect(rect.width).toBeGreaterThanOrEqual(MIN_CROP_SIZE)
     expect(rect.height).toBeGreaterThanOrEqual(MIN_CROP_SIZE)
+  })
+})
+
+describe('customSizedRect', () => {
+  it('centers a rect at the exact requested pixel size', () => {
+    expect(customSizedRect(300, 200, 1000, 800)).toEqual({ x: 350, y: 300, width: 300, height: 200 })
+  })
+
+  it('clamps width and height to the image bounds', () => {
+    expect(customSizedRect(5000, 5000, 1000, 800)).toEqual({ x: 0, y: 0, width: 1000, height: 800 })
+  })
+
+  it('never returns a size smaller than MIN_CROP_SIZE', () => {
+    const rect = customSizedRect(1, 1, 1000, 800)
+    expect(rect.width).toBe(MIN_CROP_SIZE)
+    expect(rect.height).toBe(MIN_CROP_SIZE)
   })
 })
 
