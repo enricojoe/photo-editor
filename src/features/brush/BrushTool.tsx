@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useCanvasRefs, useEditorDispatch, useEditorState, useHistory } from '../../state/EditorContext'
-import { pointerToCanvasPoint, type CanvasPoint } from '../canvas/coords'
+import { pointerToCanvasPoint, getCanvasScale, type CanvasPoint } from '../canvas/coords'
 import { normalizeHex } from '../../lib/hexColor'
 import { strokeBrushSegment } from './drawBrushStroke'
+import { buildBrushCursor } from './brushCursor'
 
 export function BrushTool() {
   const { selection, pickedColor } = useEditorState()
@@ -27,7 +28,12 @@ export function BrushTool() {
     if (!overlay || !baseCanvas) return
 
     overlay.style.pointerEvents = 'auto'
-    overlay.style.cursor = 'crosshair'
+
+    const updateCursor = () => {
+      overlay.style.cursor = buildBrushCursor(size / getCanvasScale(overlay))
+    }
+    updateCursor()
+    window.addEventListener('resize', updateCursor)
 
     const paintSegment = (from: CanvasPoint, to: CanvasPoint) => {
       const ctx = baseCanvas.getContext('2d')
@@ -81,6 +87,7 @@ export function BrushTool() {
       overlay.removeEventListener('pointermove', onPointerMove)
       overlay.removeEventListener('pointerup', stopDrawing)
       overlay.removeEventListener('pointercancel', stopDrawing)
+      window.removeEventListener('resize', updateCursor)
       overlay.style.pointerEvents = 'none'
       overlay.style.cursor = ''
     }
@@ -115,13 +122,20 @@ export function BrushTool() {
       </label>
       <label>
         Size
-        <input
-          type="range"
-          min={1}
-          max={50}
-          value={size}
-          onChange={(event) => setSize(Number(event.target.value))}
-        />
+        <div className="brush-controls__size-row">
+          <input
+            type="range"
+            min={1}
+            max={50}
+            value={size}
+            onChange={(event) => setSize(Number(event.target.value))}
+          />
+          <span
+            className="brush-controls__size-preview"
+            style={{ width: Math.min(size, 40), height: Math.min(size, 40) }}
+            aria-hidden="true"
+          />
+        </div>
         <span>{size}</span>
       </label>
       <button type="button" onClick={handleDone}>

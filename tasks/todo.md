@@ -12,3 +12,4 @@
 - [x] Stronger selection border, undo/redo, Color Adjust presets, aligned sliders (phased subagents in isolated git worktrees) -> See tasks/plans/selection-border-undo-redo-color-presets-alignment.md
 - [x] Bucket-fill-clickable undo/redo, "Colour" tool group + Brush, Watermark tool (parallel subagents in isolated git worktrees) -> See tasks/plans/colour-brush-watermark.md
 - [x] Rotate/Flip tool + Color Picker tool (parallel subagents in isolated git worktrees) -> See tasks/plans/rotate-flip-color-picker.md
+- [x] Brush size indicator (cursor outline + sidebar preview circle) -> See tasks/plans/brush-size-indicator.md

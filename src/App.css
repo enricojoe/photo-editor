@@ -488,6 +488,23 @@
   margin: 0;
 }
 
+.brush-controls__size-row {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 10px;
+}
+
+.brush-controls__size-preview {
+  flex: 0 0 auto;
+  display: block;
+  min-width: 4px;
+  min-height: 4px;
+  border-radius: 50%;
+  background: var(--text-h);
+  border: 1px solid var(--border);
+}
+
 .color-picker-controls {
   display: flex;
   flex-direction: column;
