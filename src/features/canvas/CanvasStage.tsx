@@ -1,6 +1,7 @@
 import { useCanvasRefs, useEditorState } from '../../state/EditorContext'
 import { ImageDropzone } from '../imageLoad/ImageDropzone'
 import { CropOverlay } from '../crop/CropOverlay'
+import { ResizeTool } from '../resize/ResizeTool'
 import { RotateTool } from '../transform/RotateTool'
 import { SelectionTool } from '../selection/SelectionTool'
 import { BucketFillTool } from '../bucketFill/BucketFillTool'
@@ -31,6 +32,12 @@ export function CanvasStage() {
             <>
               <h2 className="canvas-stage__sidebar-title">Crop</h2>
               <CropOverlay />
+            </>
+          )}
+          {activeTool === 'resize' && (
+            <>
+              <h2 className="canvas-stage__sidebar-title">Resize</h2>
+              <ResizeTool />
             </>
           )}
           {activeTool === 'rotate' && (

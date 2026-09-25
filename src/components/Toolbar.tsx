@@ -11,6 +11,10 @@ export function Toolbar() {
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'crop' })
   }
 
+  const handleResizeClick = () => {
+    dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'resize' })
+  }
+
   const handleRotateClick = () => {
     dispatch({ type: 'SET_ACTIVE_TOOL', tool: 'rotate' })
   }
@@ -48,6 +52,9 @@ export function Toolbar() {
       <LoadImageButton disabled={isToolActive} />
       <button type="button" onClick={handleCropClick} disabled={!hasImage || isToolActive}>
         Crop
+      </button>
+      <button type="button" onClick={handleResizeClick} disabled={!hasImage || isToolActive}>
+        Resize
       </button>
       <button type="button" onClick={handleRotateClick} disabled={!hasImage || isToolActive}>
         Rotate

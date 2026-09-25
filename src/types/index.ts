@@ -5,6 +5,7 @@ export type { Selection }
 export type ToolName =
   | 'none'
   | 'crop'
+  | 'resize'
   | 'rotate'
   | 'selection'
   | 'bucketFill'

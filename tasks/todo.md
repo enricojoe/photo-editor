@@ -13,3 +13,4 @@
 - [x] Bucket-fill-clickable undo/redo, "Colour" tool group + Brush, Watermark tool (parallel subagents in isolated git worktrees) -> See tasks/plans/colour-brush-watermark.md
 - [x] Rotate/Flip tool + Color Picker tool (parallel subagents in isolated git worktrees) -> See tasks/plans/rotate-flip-color-picker.md
 - [x] Brush size indicator (cursor outline + sidebar preview circle) -> See tasks/plans/brush-size-indicator.md
+- [x] Resize tool (scale by pixel size with aspect lock, or by percentage) -> See tasks/plans/resize-tool.md

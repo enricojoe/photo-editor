@@ -15,7 +15,7 @@ function isEditableElement(element: Element | null): boolean {
  *  operation, where restoring a canvas snapshot underneath them would corrupt
  *  what's on screen. Every other tool (including Bucket Fill) commits each
  *  edit atomically with no pending state, so undo/redo is always safe there. */
-const TOOLS_BLOCKING_HISTORY: ToolName[] = ['crop', 'colorAdjust', 'backgroundRemoval', 'watermark']
+const TOOLS_BLOCKING_HISTORY: ToolName[] = ['crop', 'resize', 'colorAdjust', 'backgroundRemoval', 'watermark']
 
 export function HistoryControls() {
   const { activeTool } = useEditorState()
