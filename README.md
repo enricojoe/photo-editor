@@ -1,5 +1,28 @@
 # React + TypeScript + Vite
 
+## Running with Docker
+
+Requires Docker with the Compose plugin. The app is fully client-side (no backend or database).
+
+```bash
+# Vite dev server with hot reload -> http://localhost:5173
+docker compose up
+```
+
+Run the other scripts inside the running container:
+
+```bash
+docker compose exec app npm test
+docker compose exec app npm run lint
+```
+
+Notes:
+
+- The `photo-editor` compose project bind-mounts the repo into a `node:24-alpine` container, so edits on your machine hot-reload. Its `node_modules` lives in a named volume (your host's macOS binaries can't run in the Linux container).
+- `npm install` runs on every start (a no-op when nothing changed), so after editing `package.json` just restart. If `node_modules` ever gets into a bad state, reset it with `docker compose down -v`.
+- Change the host port with `APP_PORT`, e.g. `APP_PORT=3000 docker compose up`, if 5173 is already in use.
+- Background removal downloads its model from imgly's CDN in the browser on first use, so the *browser* (not the container) needs internet access for that tool.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:

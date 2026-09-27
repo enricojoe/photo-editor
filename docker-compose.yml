@@ -1,0 +1,17 @@
+services:
+  # `docker compose up` -> Vite dev server with HMR at http://localhost:5173
+  photo-editor:
+    container_name: photo-editor
+    image: node:24-alpine
+    working_dir: /app
+    # `npm install` (not `ci`) so a changed package.json is picked up on the next start.
+    command: sh -c "npm install --no-audit --no-fund && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "${APP_PORT:-5173}:5173"
+    volumes:
+      - .:/app
+      # Keep the container's Linux node_modules; the host's are macOS builds.
+      - node_modules:/app/node_modules
+
+volumes:
+  node_modules:

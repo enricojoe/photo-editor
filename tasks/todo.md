@@ -14,3 +14,4 @@
 - [x] Rotate/Flip tool + Color Picker tool (parallel subagents in isolated git worktrees) -> See tasks/plans/rotate-flip-color-picker.md
 - [x] Brush size indicator (cursor outline + sidebar preview circle) -> See tasks/plans/brush-size-indicator.md
 - [x] Resize tool (scale by pixel size with aspect lock, or by percentage) -> See tasks/plans/resize-tool.md
+- [x] Add Docker Compose (project `photo-editor`, single dev service with HMR; nginx/prod variant dropped) -> See tasks/plans/docker-compose.md
