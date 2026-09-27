@@ -1,17 +1,22 @@
 services:
-  # `docker compose up` -> Vite dev server with HMR at http://localhost:5173
+  # Production build served by nginx, routed through an existing Traefik instance.
   photo-editor:
     container_name: photo-editor
-    image: node:24-alpine
-    working_dir: /app
-    # `npm install` (not `ci`) so a changed package.json is picked up on the next start.
-    command: sh -c "npm install --no-audit --no-fund && npm run dev -- --host 0.0.0.0"
-    ports:
-      - "${APP_PORT:-5173}:5173"
-    volumes:
-      - .:/app
-      # Keep the container's Linux node_modules; the host's are macOS builds.
-      - node_modules:/app/node_modules
+    build: .
+    restart: unless-stopped
+    networks:
+      - traefik_web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.photo-editor.rule=Host(`editor.enricojoe.site`)"
+      - "traefik.http.routers.photo-editor.entrypoints=websecure"
+      - "traefik.http.routers.photo-editor.tls=true"
+      - "traefik.http.routers.photo-editor.tls.certresolver=myresolver"
+      - "traefik.http.services.photo-editor.loadbalancer.server.port=80"
+      # Pins which network Traefik uses to reach this container, so routing
+      # doesn't break if another network is ever attached alongside this one.
+      - "traefik.docker.network=traefik_web"
 
-volumes:
-  node_modules:
+networks:
+  traefik_web:
+    external: true
